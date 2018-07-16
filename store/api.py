@@ -43,7 +43,7 @@ from django.template import Context, loader
 
 from models import App, Category, Vendor
 from utilities import parsePackageMetadata, packagePath, iconPath, downloadPath, addSignatureToPackage, validateTag
-
+from utilities import iconThumbnail, thumbnailPath, generateThumbnail
 
 def hello(request):
     status = 'ok'
@@ -157,7 +157,19 @@ def appDescription(request):
 def appIcon(request):
     try:
         app = App.objects.get(id__exact = request.REQUEST['id'])
-        with open(iconPath(app.id), 'rb') as iconPng:
+        iconName = app.id
+        if 'thumbnail' in request.REQUEST:
+            is_thumbnail = int(request.REQUEST['thumbnail'])
+            if is_thumbnail == 1:
+                if not settings.APPSTORE_GENERATE_THUMBNAILS:
+                    raise Http404('Thumbnails are not enabled')
+                # Open the original file and shrink it
+                iconName = iconThumbnail(app.id)
+                if not os.path.isfile(iconPath(iconName)):
+                    print('The thumbnail icon is to be generated on the fly')
+                    generateThumbnail(app.id)
+
+        with open(iconPath(iconName), 'rb') as iconPng:
             response = HttpResponse(content_type = 'image/png')
             response.write(iconPng.read())
             return response

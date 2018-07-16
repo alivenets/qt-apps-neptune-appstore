@@ -10,3 +10,4 @@ cffi
 paramiko
 cryptography
 python-magic==0.4.15
+Pillow

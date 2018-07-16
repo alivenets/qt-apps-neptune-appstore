@@ -42,6 +42,7 @@ import magic
 
 from M2Crypto import SMIME, BIO, X509
 from OpenSSL.crypto import load_pkcs12, FILETYPE_PEM, dump_privatekey, dump_certificate
+from PIL import Image
 
 from django.conf import settings
 import osandarch
@@ -75,6 +76,20 @@ def iconPath(appId = None):
         return path + appId + '.png'
     return path
 
+def iconThumbnail(appId):
+    return appId + '_' + str(settings.APP_ICON_THUMBNAIL_WIDTH) + 'x' + str(settings.APP_ICON_THUMBNAIL_HEIGHT)
+
+def thumbnailPath(appId = None):
+    return iconPath(iconThumbnail(appId))
+
+def generateThumbnail(appId):
+    print 'Generating thumbnail: ' + appId
+    width = settings.APP_ICON_THUMBNAIL_WIDTH
+    height = settings.APP_ICON_THUMBNAIL_HEIGHT
+    im = Image.open(iconPath(appId))
+    im.thumbnail((width, height))
+    im.save(thumbnailPath(appId))
+    
 def writeTempIcon(appId, icon):
     try:
         if not os.path.exists(iconPath()):
@@ -83,6 +98,8 @@ def writeTempIcon(appId, icon):
         tempicon.write(icon)
         tempicon.flush()
         tempicon.close()
+        if settings.APPSTORE_GENERATE_THUMBNAILS:
+            generateThumbnail(appId)
         return True, None
     except IOError as error:
         return False, 'Validation error: could not write icon file to media directory: %s' % str(error)

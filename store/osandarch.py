@@ -68,7 +68,7 @@ def getOsArch(str):
         arch = arch[-1]  # Take last element
         fmt = "pe32"
     if arch:
-        arch = arch.replace('_', '-')
+        arch = arch.replace('_', '-').strip()
     result = {'os': os, 'arch': arch, 'format': fmt }
     if os:
         return result

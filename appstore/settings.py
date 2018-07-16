@@ -48,6 +48,10 @@ APPSTORE_NO_SECURITY = True       # ignore developer signatures and do not gener
 APPSTORE_STORE_SIGN_PKCS12_CERTIFICATE = 'certificates/store.p12'
 APPSTORE_STORE_SIGN_PKCS12_PASSWORD = 'password'
 APPSTORE_DEV_VERIFY_CA_CERTIFICATES = [ 'certificates/ca.crt', 'certificates/devca.crt' ]
+APPSTORE_GENERATE_THUMBNAILS = True
+
+APP_ICON_THUMBNAIL_WIDTH = 64
+APP_ICON_THUMBNAIL_HEIGHT = 64
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
